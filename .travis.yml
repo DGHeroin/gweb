@@ -1,0 +1,32 @@
+language: go
+sudo: false
+env:
+- GO111MODULE=on
+go:
+- 1.13.x
+matrix:
+  include:
+  - os: linux
+  - os: osx
+    osx_image: xcode11.3
+  - os: windows
+before_script:
+- go mod tidy
+- mkdir -p bin
+- FILE_NAME="$TRAVIS_OS_NAME"
+- if [ "$TRAVIS_OS_NAME" = "windows" ]; then FILE_NAME=windows.exe ; fi
+script:
+- ls -alh ./
+- go build -o bin/gweb-"$FILE_NAME" gweb.go
+- ls -alh ./
+- ls -alh bin
+install:
+- export GOPATH="${TRAVIS_BUILD_DIR}/Godeps/_workspace:$GOPATH"
+- export PATH="${TRAVIS_BUILD_DIR}/Godeps/_workspace/bin:$PATH"
+deploy:
+  provider: releases
+  api_key:
+    secure: uJf0nJXvZSjB0b4OBwLHQrDF5Hy3ds240nS40ZzPytAY+KtIj3HHiY5pObhfiTEzHXTOP3BTJo3Z4a9klotzoH0gk1fXsCYQcFVQBQ33jCxSRoM+saIxoM85cWLv+0nrY5cIL9l2SnFaRKjK6VbyZTa1zzqH3Mp6lrT0KEVb4pW3uSfyg0DJO0giPkhuOnGKucJjT9BA2PQHXKqiEu48rIFyr0OZhP4LSuL0h6B8TdJ5Hvd43ENbJHpYX8bMtV5R1kVgKMExiHpaKPNMPh/AfaYEJeBVK0nug+e/nyHZsNSVBAFmYFqL4GZn85fxHVEE348PFGTp9JEzzL0bnCGj24o09+NW3scq6wRn0nJGmlQXWB/3+NmcfsduCRgl+xYhz3lVr3FELGkbXd928qm1tN87DVMIXFqkDngyr1euCNV4LLkGQ1ztYoh2YCIviav86nDlXfQ7i2/IiBvqIJEL/IkNeLmQcPzJiA2nT1WFYeQJknFKj/Q2AIUx8gsj7MOaSbRWCjKWzDShAtihVnpIKfDEJbiIkO/4Acm8D/8HdQzgDR4bSvUM/o/hcBZ5R3hjcSqA+AlaR9Qun9PlWF4oGyDDKAAShZ0FtWRhFH/E3GBcZuR/CwB/IXvAjX7QvKz062tFLEjqSOPo2RFJnLQ/zLgLyoxRp4aKhixgdx0hw6A=
+  file: 'bin/*'
+  on:
+    repo: DGHeroin/gweb

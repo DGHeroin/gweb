@@ -18,6 +18,7 @@ before_script:
 script:
 - ls -alh ./
 - go build -o bin/gweb-"$FILE_NAME" gweb.go
+- go build -o bin/gweb-lite-"$FILE_NAME" gweb-lite.go
 - ls -alh ./
 - ls -alh bin
 install:

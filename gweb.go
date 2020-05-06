@@ -14,8 +14,8 @@ import (
 )
 
 var (
-    path = flag.String("d", "./", "path")
-    port = flag.Int("p", 8080, "port")
+    servePath = flag.String("d", "./", "path")
+    servePort = flag.Int("p", 8080, "port")
 )
 
 type AppConfig struct {
@@ -106,8 +106,8 @@ func setConfig() {
     os.Args = os.Args[1:]
     flag.Parse()
     cfg := AppConfig{}
-    cfg.Dir = *path
-    cfg.Port = *port
+    cfg.Dir = *servePath
+    cfg.Port = *servePort
     data, _ := json.Marshal(&cfg)
     cfgPath := fmt.Sprintf("%v/.gweb.json", getPath())
     if err := ioutil.WriteFile(cfgPath, data, 0600); err != nil {

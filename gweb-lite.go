@@ -27,7 +27,7 @@ func checkEtag(w http.ResponseWriter, r *http.Request) (done bool) {
         }
         if inm == etag || inm == "*" {
             h := w.Header()
-            delete(h, "Content-Type")
+            //delete(h, "Content-Type")
             delete(h, "Content-Length")
             w.WriteHeader(http.StatusNotModified)
             return true
@@ -43,7 +43,7 @@ func checkLastModified(w http.ResponseWriter, r *http.Request, modtime time.Time
 
     if t, err := time.Parse(http.TimeFormat, r.Header.Get("If-Modified-Since")); err == nil && modtime.Before(t.Add(1*time.Second)) {
         h := w.Header()
-        delete(h, "Content-Type")
+        //delete(h, "Content-Type")
         delete(h, "Content-Length")
         w.WriteHeader(http.StatusNotModified)
         return true
@@ -96,12 +96,13 @@ func (fs FileServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func main()  {
     flag.Parse()
     fmt.Printf("run %v serve: %s", *servePort, *servePath)
-    //http.Handle("/", http.FileServer(http.Dir(*path)))
-    server := &FileServer{dir:*servePath}
-    server.init()
-    err := http.ListenAndServe(fmt.Sprintf(":%d", *servePort), server)
+    http.Handle("/", http.FileServer(http.Dir(*servePath)))
+    //var server *FileServer = nil
+    //server = &FileServer{dir:*servePath}
+    //server.init()
+    err := http.ListenAndServe(fmt.Sprintf(":%d", *servePort), nil)
     if err != nil {
-        logger.Error(err)
+       logger.Error(err)
     }
 
 }
